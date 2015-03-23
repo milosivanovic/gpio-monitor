@@ -29,30 +29,30 @@ class GPIO(object):
 	def monitor(self):
 		self.loop()
 
-	def unexport(self, port):
-		with open(GPIO.GPIO_UNEXPORT, 'w') as file:
-			file.write("%s\n" % port)
+	def set_value(self, **kwargs):
+		with open(kwargs['filename'], 'w') as file:
+			file.write("%s\n" % kwargs['data'])
 			file.close()
 
-	def export(self, port):
-		with open(GPIO.GPIO_EXPORT, 'w') as file:
-			file.write("%s\n" % port)
-			file.close()
-
-	def set_direction(self, port, direction):
-		with open(GPIO.GPIO_TEMPLATE_DIRECTION % port, 'w') as file:
-			file.write("%s\n" % direction)
-			file.close()
-
-	def set_trigger(self, port, edge):
-		with open(GPIO.GPIO_TEMPLATE_EDGE % port, 'w') as file:
-			file.write("%s\n" % edge)
-			file.close()
-
-	def get_value(self, port):
-		with open(GPIO.GPIO_TEMPLATE_VALUE % port) as file:
+	def get_value(self, **kwargs):
+		with open(kwargs['filename'], 'r') as file:
 			file.read()
 			file.close()
+
+	def unexport(self, port):
+		self.set_value(filename=GPIO.GPIO_UNEXPORT, data=port)
+
+	def export(self, port):
+		self.set_value(filename=GPIO.GPIO_EXPORT, data=port)
+
+	def set_direction(self, port, direction):
+		self.set_value(filename=GPIO.GPIO_TEMPLATE_DIRECTION % port, data=direction)
+
+	def set_trigger(self, port, edge):
+		self.set_value(filename=GPIO.GPIO_TEMPLATE_EDGE % port, data=edge)
+
+	def get_port_value(self, port):
+		return self.get_value(filename=GPIO.GPIO_TEMPLATE_VALUE % port)
 
 	def loop(self):
 		epoll = select.epoll()
