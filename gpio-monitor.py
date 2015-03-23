@@ -2,7 +2,6 @@
 
 import os
 import select
-import time
 
 class GPIO(object):
 
